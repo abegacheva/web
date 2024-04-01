@@ -1,7 +1,7 @@
 <?php
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    $user = 'u67311'; 
-    $pass = '5681522'; 
+    $user = '***'; 
+    $pass = '***'; 
     $db = new PDO('mysql:host=localhost;dbname=u67311', $user, $pass);
     $fio = $_POST['fio'];
     $phone = $_POST['phone'];
