@@ -35,8 +35,13 @@ if (empty($programming_languages)) {
     $errors[] = "Выберите хотя бы один любимый язык программирования";
 }
 foreach ($programming_languages as $language_id) {
-    if (!in_array($language_id, ["pascal", "c", "cpp", "javascript", "php", "python", "java", "haskell", "clojure", "prolog", "scala"])) {
-        $errors[] = "Неверный язык программирования";
+    try {
+        $query = "INSERT INTO user_programming_languages(user_id, programming_language_id) VALUES(?, ?)";
+        $stmt = $db->prepare($query);
+        $stmt->execute([$user_id, $language_id]);
+    } catch (PDOException $e) {
+        print('Ошибка при добавлении языка программирования: ' . $e->getMessage());
+        exit();
     }
 }
 if (empty($bio)) {
