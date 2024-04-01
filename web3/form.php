@@ -4,7 +4,7 @@
   <title>Контактная форма</title>
 </head>
 <body>
-  <form action="index.php" method="post" accept-charset="UTF-8" class="login">
+  <form action="index.php" method="post"class="login">
     <label for="fio">ФИО:</label>
     <input type="text" id="fio" name="fio" required>
     <br>
@@ -40,7 +40,7 @@
     <br>
     <label for="bio">Биография:</label>
     <textarea id="bio" name="bio" required></textarea>
-    <input type="submit" value="Сохранить">
+    <input type="submit" name ="submit" value="Сохранить">
   </form>
 </body>
 </html>
