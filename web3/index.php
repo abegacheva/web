@@ -1,78 +1,63 @@
 <?php
-if (isset($_POST['submit'])) {
-    $fio = $_POST['fio'];
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+    $user = 'u67311'; 
+    $pass = '5681522'; 
+    $db = new PDO('mysql:host=localhost;dbname=u67311', $user, $pass);
+    $name = $_POST['fio'];
     $phone = $_POST['phone'];
     $email = $_POST['email'];
     $birthdate = $_POST['birthdate'];
-    $gender = $_POST['gender'];
+    $gender = isset($_POST['gender']) ? $_POST['gender'] : '';
     $bio = $_POST['bio'];
-    $programming_languages = $_POST['programming_languages'];
+    echo "<div class='error-message-container'>";
     $errors = [];
 
-    // Проверка наличия ошибок в заполнении формы
-
-    if (empty($fio)) {
-        $errors[] = 'Поле "ФИО" обязательно для заполнения.';
-    } elseif (!preg_match('/^[а-яА-ЯёЁa-zA-Z ]+$/', $fio)) {
-        $errors[] = 'Поле "ФИО" должно содержать только буквы и пробелы.';
-    } elseif (strlen($fio) > 150) {
-        $errors[] = 'Поле "ФИО" не должно быть длиннее 150 символов.';
+    if (!preg_match("/^[a-zA-Zа-яА-Я ]+$/u", $name)) {
+        $errors[] = "Введите корректное имя.";
     }
-    if (empty($phone)) {
-        $errors[] = 'Поле "Телефон" обязательно для заполнения.';
-    } elseif (!preg_match("/^\+?[0-9\s]+$/", $phone)) {
-        $errors[] = 'Телефон должен содержать только цифры и пробелы';
+    if (!preg_match("/^\d{4}-\d{2}-\d{2}$/", $birthdate)) {
+        $errors[] = "Дата рождения должна быть в формате ДЕНЬ-МЕСЯЦ-ГОД";
     }
-    if (empty($email)) {
-        $errors[] = 'Поле "E-mail" обязательно для заполнения.';
-    } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-        $errors[] = 'E-mail должен быть действительным адресом электронной почты';
-    }
-    if (empty($birthdate) || !preg_match("/^\d{4}-\d{2}-\d{2}$/", $birthdate)) {
-        $errors[] = 'Дата рождения должна быть в формате ГГГГ-ММ-ДД';
-    }
-    if (!isset($gender) || !in_array($gender, ["male", "female"])) {
-        $errors[] = "Выберите пол";
-    }
-    if (empty($programming_languages)) {
-        $errors[] = "Выберите хотя бы один любимый язык программирования";
+    if (!preg_match("/^[a-zA-Zа-яА-Я.,! ]+$/u", $bio)) {
+        $errors[] = "Поле Биография не может содержать спец.символы";
     }
 
-    foreach ($programming_languages as $language_id) {
-        if (!in_array($language_id, ["pascal", "c", "cpp", "javascript", "php", "python", "java", "haskell", "clojure", "prolog", "scala"])) {
-            $errors[] = "Неверный язык программирования";
-        }
-    }
-    if (empty($bio)) {
-        $errors[] = "Заполните биографию";
+    if (!preg_match("/^\+?[0-9]{1,4}[0-9]{10}$/", $phone)) {
+        $errors[] = "Введите корректный номер телефона";
     }
 
-    if (empty($errors)) {
-        // Если ошибок нет, производим запись в базу данных
-        $user = 'u67311';
-        $pass = '5681522';
-        $db = new PDO('mysql:host=127.0.0.1;dbname=u67311', $user, $pass, array(PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8"));
-        $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-        try {
-            $stmt = $db->prepare("INSERT INTO users(fio, phone, email, birthdate, gender, bio) VALUES(:fio, :phone, :email, :birthdate, :gender, :bio)");
-            $stmt->execute(array('fio' => $fio, 'phone' => $phone, 'email' => $email, 'birthdate' => $birthdate, 'gender' => $gender, 'bio' => $bio));
-            $user_id = $db->lastInsertId();
-            foreach ($programming_languages as $language_id) {
-                $query = "INSERT INTO user_programming_languages(user_id, programming_language_id) VALUES(?, ?)";
-                $stmt = $db->prepare($query);
-                $stmt->bindParam(1, $user_id, PDO::PARAM_INT);
-                $stmt->bindParam(2, $language_id, PDO::PARAM_INT);
-                $stmt->execute();
-            }
-            // Вывод сообщения об успешной отправке
-            echo "Данные успешно отправлены!";
-        } catch (PDOException $e) {
-            print('Ошибка при добавлении пользователя: ' . $e->getMessage());
-            exit();
+    if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        $errors[] = "Введите корректный email";
+    }
+    if (empty($gender)) {
+        $errors[] = "Выберите пол.";
+    }
+    if (!empty($errors)) {
+        foreach ($errors as $error) {
+            echo "<div error-message style='color: red;'>$error</div>";
         }
     } else {
-        // Вывод ошибок, если они есть
-        print_r($errors);
+        $stmt = $db->prepare("INSERT INTO App (FIO, Phone, Email, Birthdate, Gender, Bio) VALUES (?, ?, ?, ?, ?, ?)");
+        $stmt->execute([$name, $phone, $email, $birthdate, $gender, $bio]);
+        $last_id = $db->lastInsertId();
+        if (isset($_POST['programming_languages']) && !empty($_POST['programming_languages'])) {
+            foreach ($_POST['programming_languages'] as $language) {
+                $stmt = $db->prepare("SELECT ID FROM Ability WHERE ProgrammingLanguage = ?");
+                $stmt->execute([$language]);
+                $ability_id = $stmt->fetchColumn();
+                if ($ability_id !== false && is_numeric($ability_id)) {
+
+                    $stmt = $db->prepare("INSERT INTO App_Ability (ApplicationID, AbilityID) VALUES (?, ?)");
+                    $stmt->execute([$last_id, $ability_id]);
+                } else {
+                    error_log("Язык '$language' Не найден в таблице Ability");
+                }
+            }
+        }
+        header('Location: form.php?save=1');
+        exit();
     }
 }
+
+include('form.php');
 ?>
