@@ -76,6 +76,14 @@
         .submit:hover {
             background-color: #0056b3;
         }
+        .container {
+            max-width: 600px;
+            margin: auto;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0px 0px 15px 0px #514542;
+            border-radius: 15px;
+}
 
     </style>
 </head>
