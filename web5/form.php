@@ -164,5 +164,32 @@
             <input class="submit" type="submit" value="Сохранить">
         </form>
     </div>
+
+    <div class="container">
+    <?php
+      if (!empty($_COOKIE[session_name()]) && !empty($_SESSION['login']))
+        print('<a href="login.php" class = "enter-exit" title = "Log out">Выйти</a>');
+      else
+        print('<a href="login.php" class = "enter-exit"  title = "Log in">Войти</a>');
+    ?>
+    </div>
+
+    <div class="container">
+        <label>Таблица логинов и паролей</label><br>
+        <img src="img/5.png" alt="Image 1">
+        <br>
+        <label>Успешная отправка формы и создание аккаунта</label><br>
+        <img src="img/3.png" alt="Image 2">
+        <br>
+        <label>Попытка войти в несуществующий аккаунт</label><br>
+        <img src="img/4.png" alt="Image 3">
+        <br>
+        <label>Ошибка в пароле</label><br>
+        <img src="img/2.png" alt="Image 4">
+        <br>
+        <label>Вход в аккаунт и возможность выйти из него</label><br>
+        <img src="img/1.png" alt="Image 5">
+        <br>
+    </div>
 </body>
 </html>
