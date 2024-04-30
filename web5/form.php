@@ -77,11 +77,13 @@
             background-color: #0056b3;
         }
         .container {
+
+            margin-top: 20px;
             max-width: 600px;
             margin: auto;
             padding: 20px;
             margin-bottom: 20px;
-            box-shadow: 0px 0px 15px 0px #514542;
+            box-shadow: 0px 0px 5px 0px #514542;
             border-radius: 15px;
 }
 
@@ -180,19 +182,6 @@
       else
         print('<a href="login.php" class = "enter-exit"  title = "Log in">Войти</a>');
     ?>
-    </div>
-
-    <div class="container">
-        <label>Таблица логинов и паролей</label><br>
-        <br>
-        <label>Успешная отправка формы и создание аккаунта</label><br>
-        <br>
-        <label>Попытка войти в несуществующий аккаунт</label><br>
-        <br>
-        <label>Ошибка в пароле</label><br>
-        <br>
-        <label>Вход в аккаунт и возможность выйти из него</label><br>
-        <br>
     </div>
 </body>
 </html>
