@@ -1,50 +1,57 @@
-<!DOCTYPE html>
-<html lang="ru">
-<head>
-  <meta charset="UTF-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Войдите в систему</title>
-  <link rel="stylesheet" href="styles.css">
-</head>
-<body>
 <?php
 header('Content-Type: text/html; charset=UTF-8');
-session_start();
-if (!empty($_SESSION['login'])) {
-  session_destroy();
-  header('Location: ./');
+$user = '*****';
+$pass = '*****';
+$host = '*****';
+$dbname = '*****';
+$db = new PDO("mysql:host=$host;dbname=$dbname", $user, $pass);
+$session_started = false;
+if (isset($_COOKIE[session_name()]) && session_start()) {
+  $session_started = true;
+  if (!empty($_SESSION['login'])) {
+    if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['logout'])) {
+      session_unset();
+      session_destroy();
+      header('Location: ./login.php');
+      exit();
+    } else {
+      header('Location: ./');
+      exit();
+    }
+  }
 }
 if ($_SERVER['REQUEST_METHOD'] == 'GET') {
-  if (!empty($_GET['nologin']))
-    print("<div>Пользователь с таким логином не зарегистрирован</div>");
-  if (!empty($_GET['wrongpass']))
-    print("<div>Ошибка в пароле</div>");
 ?>
-  <form action="" method="post">
-    <input name="login" placeholder="Введите логин"/>
-    <input name="pass" placeholder="Введите пароль"/>
-    <input type="submit" id="login" value="Войти" />
-  </form>
-  <?php
+<form action="login.php" method="post">
+  <input name="login" placeholder="Логин" />
+  <input name="passbyform" type="password" placeholder="Пароль" />
+  <input type="submit" value="Войти" />
+  <button type="submit" name="logout">Выход</button>
+</form>
+<?php
 }
-else {
-  $db = new PDO('mysql:host=localhost;dbname=u67311', 'u67311', '5681522', array(PDO::ATTR_PERSISTENT => true));
-  $stmt = $db->prepare("SELECT id, pass FROM login_pass WHERE login = ?");
-  $stmt -> execute([$_POST['login']]);
-  $row = $stmt->fetch(PDO::FETCH_ASSOC);
-  if($row["pass"] != md5($_POST['pass'])) {
-    header('Location: ?wrongpass=1');
-    exit();
-  }
-  if (!$row) {
-    header('Location: ?nologin=1');
-    exit();
-  }
-  $_SESSION['login'] = $_POST['login'];
-  $_SESSION['uid'] = $row["id"];
-  header('Location: ./');
-}
+else
+	{
+	  $login = $_POST['login'];
+	  $passbyform = $_POST['passbyform'];
+	  $quer = "SELECT * FROM Users WHERE Login = '$login'";
+	  $stmt = $db->prepare("SELECT Password FROM Users WHERE Login = ?");
+	  $stmt->execute([$login]);
+	  $row = $stmt->fetch(PDO::FETCH_ASSOC);
+	  if ($row && password_verify($passbyform, $row['Password'])) {
+		  session_start();
+		  $_SESSION['login'] = $login;
+		  $_SESSION['uid'] = $row['ID'];
+		  setcookie('fio_error', '', 100000);
+		  setcookie('phone_error', '', 100000);
+		  setcookie('email_error', '', 100000);
+		  setcookie('birthdate_error', '', 100000);
+		  setcookie('gender_error', '', 100000);
+		  setcookie('bio_error', '', 100000);
+		  setcookie('contract_error', '', 100000);
+		  header('Location: ./');
+	  } else {
+		  echo "Неверный логин или пароль";
+	  }
+	}
 ?>
-</body>
-</html>
