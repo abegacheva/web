@@ -243,7 +243,7 @@ else {
     }
     if (!empty($_COOKIE[session_name()]) &&
         session_start() && !empty($_SESSION['login'])) {
-        $db = new PDO('mysql:host=localhost;dbname=u67311', 'u67311', '5681522', array(PDO::ATTR_PERSISTENT => true));
+        $db = new PDO('mysql:host=localhost;dbname=******', '******', '******', array(PDO::ATTR_PERSISTENT => true));
         $stmt = $db->prepare("UPDATE App SET FIO = ?, Phone = ?, Email = ?, Birthdate = ?, Gender = ?, Bio = ?, Contact = ? WHERE ID = ?");
         $stmt->execute([$_POST['name'], $_POST['phone'], $_POST['email'], $_POST['year'], $_POST['gender'], $_POST['bio'], isset($_POST['checkbox']) ? 1 : 0, $_SESSION['uid']]);
         $stmt = $db->prepare("DELETE FROM App_Ability WHERE ApplicationID = ?");
@@ -262,7 +262,7 @@ else {
         $login = $chars[rand(0, 25)] . strval(time());
         setcookie('login', $login);
         setcookie('pass', $pass);
-        $db = new PDO('mysql:host=localhost;dbname=u67311', 'u67311', '5681522', array(PDO::ATTR_PERSISTENT => true));
+        $db = new PDO('mysql:host=localhost;dbname=******', '******', '******', array(PDO::ATTR_PERSISTENT => true));
         $stmt = $db->prepare("INSERT INTO App (FIO, Phone, Email, Birthdate, Gender, Bio, Contact) VALUES (?, ?, ?, ?, ?, ?, ?)");
         $stmt->execute([$_POST['name'], $_POST['phone'], $_POST['email'], $_POST['year'], $_POST['gender'], $_POST['bio'], isset($_POST['checkbox']) ? 1 : 0]);
         $res = $db->query("SELECT max(ID) FROM App");
