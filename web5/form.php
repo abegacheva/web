@@ -4,70 +4,99 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<style>
-		body {
-			background-color: #fff;
-			color: black;
-		}
-		.about-form {
-			background-color: #ffffff;
-			color: #000000;
-			padding: 20px;
-			border-radius: 10px;
-			box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5);
-			transition: all 0.3s ease;
-		}
-		.about-form input[type="text"],
-		.about-form input[type="date"],
-		.about-form textarea,
-		.about-form select {
-			background-color: #ffffff;
-			color: #000000; 
-			padding: 8px;
-			border-radius: 5px;
-			margin-bottom: 10px;
-			transition: all 0.3s ease;
-			border: 1px solid black;
-		}
-		.about-form input[type="text"]:focus,
-		.about-form input[type="date"]:focus,
-		.about-form textarea:focus,
-		.about-form select:focus {
-			border: 1px solid transparent;
-			outline: none;
-		}
-		.about-form .error-container {
-			border: 2px solid red;
-		}
-		.about-form .submit {
-			background-color: #008CBA;
-			color: white;
-			padding: 10px 20px;
-			border: none;
-			border-radius: 5px;
-			cursor: pointer;
-			transition: all 0.3s ease;
-		}
-		.about-form .submit:hover {
-			background-color: #005f75;
-		}
-		.logout-button {
-			padding: 10px 20px;
-			color: black;
-			border: 1px solid #ccc;
-			border-radius: 5px;
-			cursor: pointer;
-			font-size: 16px;
-			transition: background-color 0.3s ease, transform 0.3s ease;
-			transform: scale(1.05);
-			text-shadow: 1px 1px 2px white;
-			margin: 20px 10px;
-		}
-		.logout-button:hover {
-			background-color: black;
-			transform: scale(1.05);
-			color: white;
-		}
-	</style>
+        body {
+			background-color: #ffe6f2;
+			color: #663399;
+			text-align: center;
+			display: flex;
+			flex-direction: column;
+			flex-wrap: nowrap;
+			align-content: stretch;
+			justify-content: space-evenly;
+			align-items: center;
+        }
+
+        header {
+            background-color: #ff99cc;
+            padding: 10px;
+            margin-bottom: 20px;
+        }
+
+        footer {
+            background-color: #ff99cc;
+            padding: 10px;
+            margin-top: 20px;
+        }
+
+        .about-form {
+            background-color: #ffffff;
+            color: #663399;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.3);
+            transition: all 0.3s ease;
+            display: inline-block;
+            text-align: left;
+        }
+
+        .about-form input[type="text"],
+        .about-form input[type="date"],
+        .about-form textarea,
+        .about-form select {
+            background-color: #ffffff;
+            color: #663399;
+            padding: 8px;
+            border-radius: 5px;
+            margin-bottom: 10px;
+            transition: all 0.3s ease;
+            border: 1px solid #cc99ff;
+        }
+
+        .about-form input[type="text"]:focus,
+        .about-form input[type="date"]:focus,
+        .about-form textarea:focus,
+        .about-form select:focus {
+            border: 1px solid transparent;
+            outline: none;
+        }
+
+        .about-form .error-container {
+            border: 1px solid red;
+        }
+
+        .about-form .submit {
+            background-color: #ff66b3;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .about-form .submit:hover {
+            background-color: #ff3399;
+        }
+
+        .logout-button {
+            padding: 10px 20px;
+            color: #663399;
+            border: 1px solid #cc99ff;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s ease, transform 0.3s ease;
+            transform: scale(1.05);
+            text-shadow: 1px 1px 2px white;
+            margin: 20px 10px;
+        }
+
+        .logout-button:hover {
+            background-color: #cc99ff;
+            transform: scale(1.05);
+            color: white;
+        }
+    </style>
 </head>
 <body>
     <?php
@@ -112,7 +141,6 @@
 		$stmt = $db->prepare("SELECT * FROM App WHERE ID = ?");
 		$stmt->execute([$user_id]);
 		$application_data = $stmt->fetch(PDO::FETCH_ASSOC);
-		print_r($application_data);
 		if ($application_data) {
 			$fio = $application_data['FIO'];
 			$phone = $application_data['Phone'];
