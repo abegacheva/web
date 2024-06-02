@@ -2,7 +2,7 @@
 header('Content-Type: text/html; charset=UTF-8');
 
 $user = '*****'; 
-$pass = '*****'; // ваш пароль
+$pass = '*****'; 
 $host = '*****';
 $dbname = '*****';
 $db = new PDO("mysql:host=$host;dbname=$dbname", $user, $pass);
